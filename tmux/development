@@ -1,0 +1,35 @@
+#!/bin/bash
+if [[ $1 == "" ]]
+then
+  echo "Use project folders as argument: './development <path/to/project_name>'"
+  exit -1
+fi
+
+path=$1
+echo "Initializing session for: $1"
+
+IFS='/'
+read -ra array <<< "$1"
+session=${array[${#array[@]}-1]}
+IFS=' '
+
+tmux has-session -t $session
+if [ $? != 0 ]
+then
+	echo "session will be named: $session"
+	tmux new-session -s $session -n $session -d
+	tmux send-keys -t $session "cd $path" C-m
+	# tmux send-keys -t $session "vim" C-m
+
+	tmux split-window -h -t $session
+        tmux send-keys -t $session:1.2 "cd $path" C-m
+	tmux send-keys -t $session:1.2 "make dev"
+        # tmux split-window -v -t $session:2.2
+
+	tmux new-window -n freeShell
+	tmux send-keys -t $session:2.1 "cd $path" C-m
+
+	tmux select-window -t $session:1
+fi
+
+tmux attach -t $session:1.1
