@@ -1,3 +1,5 @@
+local u = require('utils')
+
 return {
   "neovim/nvim-lspconfig",
   event = { "BufReadPre", "BufNewFile" },
@@ -115,6 +117,14 @@ return {
           },
         },
       },
+    })
+
+    vim.api.nvim_create_autocmd('LspAttach', {
+      group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+
+      callback = function()
+        u.create_augroup({ {'BufWritePre', '*', 'lua vim.lsp.buf.format { async = true }' } }, 'LSPFormatOnSave')
+      end,
     })
   end,
 }
