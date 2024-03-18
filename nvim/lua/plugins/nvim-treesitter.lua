@@ -32,15 +32,17 @@ return {
           "vim",
           "dockerfile",
           "gitignore",
-					"go",
-					"ruby",
-					"terraform",
+          "go",
+          "ruby",
+          "terraform",
         },
+        -- context_commentstring nvim-treesitter module is deprecated, use use require('ts_context_commentstring').setup {} and set vim.g.skip_ts_context_commentstring_module = true to speed up loading instead.
+        -- This feature will be removed in ts_context_commentstring version in the future
         -- enable nvim-ts-context-commentstring plugin for commenting tsx and jsx
-        context_commentstring = {
-          enable = true,
-          enable_autocmd = false,
-        },
+        -- context_commentstring = {
+        --   enable = true,
+        --   enable_autocmd = false,
+        -- },
         -- auto install above language parsers
         auto_install = true,
       })

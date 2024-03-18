@@ -10,9 +10,9 @@ return {
       config = true,
     },
   },
-	opts = {
-		autoformat = true,
-	},
+  opts = {
+    autoformat = true,
+  },
   config = function()
     -- import lspconfig plugin
     local lspconfig = require("lspconfig")
@@ -24,31 +24,32 @@ return {
 
     -- enable keybinds only for when lsp server available
     local on_attach = function(client, bufnr)
-			local opts = { noremap = true, silent = true, buffer = bufnr }
+      local opts = { noremap = true, silent = true, buffer = bufnr }
       -- keybind options
-			keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
-			keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, opts)
+      keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
+      keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, opts)
 
-			keymap.set('n', 'gd', vim.lsp.buf.definition,opts)
-			keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
-			keymap.set('n', 'gr', require('telescope.builtin').lsp_references, opts)
-			keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+      keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+      keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+      keymap.set('n', 'gr', require('telescope.builtin').lsp_references, opts)
+      keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+      keymap.set('n', '<leader>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
 
-			if client.supports_method("textDocument/formatting") then
-          local format_on_save = vim.api.nvim_create_augroup("LspFormatting", { clear = true })
-          vim.api.nvim_create_autocmd('BufWritePre', {
-            group = format_on_save,
-            buffer = bufnr,
-            callback = function()
-              vim.lsp.buf.format({
-                bufnr = bufnr,
-                filter = function(_client)
-                  return _client.name == "null-ls"
-                end
-              })
-            end,
-          })
-        end
+      if client.supports_method("textDocument/formatting") then
+        local format_on_save = vim.api.nvim_create_augroup("LspFormatting", { clear = true })
+        vim.api.nvim_create_autocmd('BufWritePre', {
+          group = format_on_save,
+          buffer = bufnr,
+          callback = function()
+            vim.lsp.buf.format({
+              bufnr = bufnr,
+              filter = function(_client)
+                return _client.name == "null-ls"
+              end
+            })
+          end,
+        })
+      end
     end
 
     -- used to enable autocompletion (assign to every lsp server config)
@@ -62,41 +63,41 @@ return {
       vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
     end
 
-		local language_server = {
-				-- "dockerls", -- DOCKER
-        -- "html",
-        -- "cssls",
-        "lua_ls",
-				-- "jsonls", -- JSON
-				-- "solargraph", -- RUBY
-				-- "ruby_ls", -- RUBY
-				"sqls", -- SQL
-				"marksman", -- Markdown
-				"terraformls", -- Terraform
-		}
+    local language_server = {
+      -- "dockerls", -- DOCKER
+      -- "html",
+      -- "cssls",
+      "lua_ls",
+      -- "jsonls", -- JSON
+      "solargraph",  -- RUBY
+      -- "ruby_ls", -- RUBY
+      "sqls",        -- SQL
+      "marksman",    -- Markdown
+      "terraformls", -- Terraform
+    }
 
-		for _, server in pairs(language_server) do
-			lspconfig[server].setup({
-				on_attach = on_attach,
-				capabilities = capabilities,
-			})
-		end
+    for _, server in pairs(language_server) do
+      lspconfig[server].setup({
+        on_attach = on_attach,
+        capabilities = capabilities,
+      })
+    end
 
-		lspconfig.gopls.setup({
-			on_attach = on_attach,
-			capabilities = capabilities,
-			settings = {
-				gopls = {
-					completeUnimported = true,
-					usePlaceholders = true,
-					standaloneTags = {"unit", "integration"},
-					gofumpt = true,
-					analyses = {
-						unusedparamas = true
-					}
-				}
-			}
-		})
+    lspconfig.gopls.setup({
+      on_attach = on_attach,
+      capabilities = capabilities,
+      settings = {
+        gopls = {
+          completeUnimported = true,
+          usePlaceholders = true,
+          standaloneTags = { "unit", "integration" },
+          gofumpt = true,
+          analyses = {
+            unusedparamas = true
+          }
+        }
+      }
+    })
 
     -- configure lua server (with special settings)
     lspconfig["lua_ls"].setup({
@@ -123,7 +124,7 @@ return {
       group = vim.api.nvim_create_augroup('UserLspConfig', {}),
 
       callback = function()
-        u.create_augroup({ {'BufWritePre', '*', 'lua vim.lsp.buf.format { async = true }' } }, 'LSPFormatOnSave')
+        u.create_augroup({ { 'BufWritePre', '*', 'lua vim.lsp.buf.format { async = true }' } }, 'LSPFormatOnSave')
       end,
     })
   end,
