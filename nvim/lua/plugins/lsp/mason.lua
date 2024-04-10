@@ -13,17 +13,17 @@ return {
     mason_lspconfig.setup({
       -- list of servers for mason to install
       ensure_installed = {
-				-- "dockerls", -- DOCKER
+        -- "dockerls", -- DOCKER
         -- "html",
         -- "cssls",
         "lua_ls",
-				-- "jsonls", -- JSON
-				-- "solargraph", -- RUBY
-				-- "ruby_ls", -- RUBY
-				"sqls", -- SQL
-				"gopls", -- GO
-				"marksman", -- Markdown
-				"terraformls", -- Terraform
+        -- "jsonls", -- JSON
+        "solargraph",  -- RUBY
+        -- "ruby_ls", -- RUBY
+        "sqls",        -- SQL
+        "gopls",       -- GO
+        "marksman",    -- Markdown
+        "terraformls", -- Terraform
       },
       -- auto-install configured servers (with lspconfig)
       automatic_installation = true, -- not the same as ensure_installed
