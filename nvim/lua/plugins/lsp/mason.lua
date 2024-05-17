@@ -30,9 +30,9 @@ return {
       automatic_installation = true, -- not the same as ensure_installed
     })
 
-    -- most likely formatters
     local tool_installer = require("mason-tool-installer")
     tool_installer.setup({
+      -- formatters and linter
       ensure_installed = {
         "prettier",
         "stylua",
@@ -40,6 +40,8 @@ return {
         "golines",
         "gofumpt",
         "goimports-reviser",
+        "golangci-lint",
+        "markdownlint",
       },
     })
   end,
