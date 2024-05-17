@@ -4,12 +4,15 @@ Explicitly neovim and tmux changes
 
 ### Requirements
 
+#### Brews
+
 - ctags
 - fzf
 - git
 - neovim
 - ripgrep
 - the_silver_searcher
+- jesseduffield/lazygit/lazygit
 
 any language programming in (neovim for that purpose requires GO and RUBY)
 
@@ -20,7 +23,7 @@ any language programming in (neovim for that purpose requires GO and RUBY)
 ### Ideas taken from
 
 [@typecraft](https://www.youtube.com/@typecraft_dev)\
-[Josean Martinez](https://www.youtube.com/watch?v=6mxWayq-s9I)\
+[Josean Martinez - YT](https://www.youtube.com/watch?v=6mxWayq-s9I)\
+[Josean Martinez - GH](https://github.com/josean-dev-/dev-environment-files)\
 [Dracula Colorscheme](https://draculatheme.com/)\
 [Andrii](https://github.com/andriiyaremenko/dotfiles)\
-[Florian](https://github.com/nitschmann/nvim)
