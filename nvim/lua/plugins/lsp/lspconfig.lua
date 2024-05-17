@@ -1,162 +1,134 @@
--- local u = require('utils')
---
--- return {
---   "neovim/nvim-lspconfig",
---   event = { "BufReadPre", "BufNewFile" },
---   dependencies = {
---     "hrsh7th/cmp-nvim-lsp",
---     {
---       "smjonas/inc-rename.nvim",
---       config = true,
---     },
---   },
---   opts = {
---     autoformat = true,
---   },
---   config = function()
---     -- import lspconfig plugin
---     local lspconfig = require("lspconfig")
---
---     -- import cmp-nvim-lsp plugin
---     local cmp_nvim_lsp = require("cmp_nvim_lsp")
---
---     local keymap = vim.keymap -- for conciseness
---
---     -- enable keybinds only for when lsp server available
---     local on_attach = function(client, bufnr)
---       local opts = { noremap = true, silent = true, buffer = bufnr }
---       -- keybind options
---       keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
---       keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, opts)
---
---       keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
---       keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
---       keymap.set('n', 'gr', require('telescope.builtin').lsp_references, opts)
---       keymap.set('n', 'K', vim.lsp.buf.hover, opts)
---       keymap.set('n', '<leader>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
---
---       if client.supports_method("textDocument/formatting") then
---         local format_on_save = vim.api.nvim_create_augroup("LspFormatting", { clear = true })
---         vim.api.nvim_create_autocmd('BufWritePre', {
---           group = format_on_save,
---           buffer = bufnr,
---           callback = function()
---             vim.lsp.buf.format({
---               bufnr = bufnr,
---               filter = function(_client)
---                 return _client.name == "null-ls"
---               end
---             })
---           end,
---         })
---       end
---     end
---
---     -- used to enable autocompletion (assign to every lsp server config)
---     local capabilities = cmp_nvim_lsp.default_capabilities()
---
---     -- Change the Diagnostic symbols in the sign column (gutter)
---     -- (not in youtube nvim video)
---     local signs = { Error = " ", Warn = " ", Hint = "󰠠 ", Info = " " }
---     for type, icon in pairs(signs) do
---       local hl = "DiagnosticSign" .. type
---       vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
---     end
---
---     local language_server = {
---       -- "dockerls", -- DOCKER
---       -- "html",
---       -- "cssls",
---       "lua_ls",
---       -- "jsonls", -- JSON
---       "solargraph",  -- RUBY
---       -- "ruby_ls", -- RUBY
---       "sqls",        -- SQL
---       "marksman",    -- Markdown
---       "terraformls", -- Terraform
---     }
---
---     for _, server in pairs(language_server) do
---       lspconfig[server].setup({
---         on_attach = on_attach,
---         capabilities = capabilities,
---       })
---     end
---
---     lspconfig.gopls.setup({
---       on_attach = on_attach,
---       capabilities = capabilities,
---       settings = {
---         gopls = {
---           completeUnimported = true,
---           usePlaceholders = true,
---           standaloneTags = { "unit", "integration" },
---           gofumpt = true,
---           analyses = {
---             unusedparamas = true
---           }
---         }
---       }
---     })
---
---     -- configure lua server (with special settings)
---     lspconfig["lua_ls"].setup({
---       capabilities = capabilities,
---       on_attach = on_attach,
---       settings = { -- custom settings for lua
---         Lua = {
---           -- make the language server recognize "vim" global
---           diagnostics = {
---             globals = { "vim" },
---           },
---           workspace = {
---             -- make language server aware of runtime files
---             library = {
---               [vim.fn.expand("$VIMRUNTIME/lua")] = true,
---               [vim.fn.stdpath("config") .. "/lua"] = true,
---             },
---           },
---         },
---       },
---     })
---   end,
--- }
 return {
-  {
-    "williamboman/mason.nvim",
-    config = function()
-      require("mason").setup()
-    end,
+  "neovim/nvim-lspconfig",
+  event = { "BufReadPre", "BufNewFile" },
+  dependencies = {
+    "hrsh7th/cmp-nvim-lsp",
+    { "antosha417/nvim-lsp-file-operations", config = true },
+    { "folke/neodev.nvim", opts = {} },
+    {
+      "smjonas/inc-rename.nvim",
+      config = true,
+    },
   },
-  {
-    "williamboman/mason-lspconfig.nvim",
-    config = function()
-      require("mason-lspconfig").setup({
-        ensure_installed = {
-          "lua_ls",
-          "ruby_lsp",
-          -- "solargraph",
-          "sqls",
-          "gopls",
-          "marksman",
-          "terraformls",
-        },
-      })
-    end,
+  opts = {
+    autoformat = true,
   },
-  {
-    "neovim/nvim-lspconfig",
-    config = function()
-      local lspconfig = require("lspconfig")
-      lspconfig.lua_ls.setup({})
-      lspconfig.ruby_lsp.setup({})
-      lspconfig.sqls.setup({})
-      lspconfig.gopls.setup({})
-      lspconfig.marksman.setup({})
-      lspconfig.terraformls.setup({})
-      vim.keymap.set("n", "K", vim.lsp.buf.hover, {})
-      vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, {})
-      vim.keymap.set("n", "gd", vim.lsp.buf.definition, {})
-    end,
-  },
+  config = function()
+    -- import lspconfig plugin
+    local lspconfig = require("lspconfig")
+    local mason_lspconfig = require("mason-lspconfig")
+    local cmp_nvim_lsp = require("cmp_nvim_lsp")
+    local km = vim.keymap -- for conciseness
+
+    vim.api.nvim_create_autocmd("LspAttach", {
+      -- enable keybindings only if lsp server available
+      group = vim.api.nvim_create_augroup("UserLspConfig", {}),
+      callback = function(ev)
+        local opts = { buffer = ev.buf, silent = true }
+
+        opts.desc = "Show LSP references"
+        km.set("n", "gR", "<cmd>Telescope lsp_references<cr>", opts)
+
+        opts.desc = "Go to declaration"
+        km.set("n", "gD", vim.lsp.buf.declaration, opts)
+
+        opts.desc = "Show LSP definitions"
+        km.set("n", "gd", "<cmd>Telescope lsp_definitions<cr>", opts)
+
+        opts.desc = "Show LSP implementation"
+        km.set("n", "gi", "<cmd>Telescope lsp_implementations<cr>", opts)
+
+        opts.desc = "Show LSP type definitions"
+        km.set("n", "gt", "<cmd>Telescope lsp_type_definitions<cr>", opts)
+
+        opts.desc = "List available code actions"
+        km.set({ "n", "v" }, "ca", vim.lsp.buf.code_action, opts)
+
+        -- defined in none-ls.lua plugin
+        -- opts.desc = "Format the current buffer"
+        -- km.set("n", "gf", vim.lsp.buf.format, opts)
+
+        opts.desc = "Smart rename"
+        km.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+
+        opts.desc = "Show buffer diagnostics"
+        km.set("n", "<leader>D", "<cmd>Telescope diagnostics bufnr=0<cr>", opts)
+
+        opts.desc = "Show line diagnostics"
+        km.set("n", "<leader>d", vim.diagnostic.open_float, opts)
+
+        opts.desc = "Go to previous diagnostic"
+        km.set("n", "[d", vim.diagnostic.goto_prev, opts)
+
+        opts.desc = "Go to next diagnostic"
+        km.set("n", "]d", vim.diagnostic.goto_next, opts)
+
+        opts.desc = "Show available documentation for item under cursor"
+        km.set("n", "K", vim.lsp.buf.hover, opts)
+
+        opts.desc = "Restart LSP"
+        km.set("n", "<leader>rs", ":LspRestart<cr>", opts)
+      end,
+    })
+
+    -- used to enable autocompletion (assign to every lsp server config)
+    local capabilities = cmp_nvim_lsp.default_capabilities()
+    -- Change the Diagnostic symbols in the sign column (gutter)
+    local signs = { Error = " ", Warn = " ", Hint = "󰠠 ", Info = " " }
+    for type, icon in pairs(signs) do
+      local hl = "DiagnosticSign" .. type
+      vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
+    end
+
+    mason_lspconfig.setup_handlers({
+      -- server list is taken from mason.lua's ensure_installed block
+      function(server_name)
+        lspconfig[server_name].setup({
+          -- on_attach = on_attach,
+          capabilities = capabilities,
+        })
+      end,
+
+      ["gopls"] = function()
+        lspconfig["gopls"].setup({
+          capabilities = capabilities,
+          settings = {
+            gopls = {
+              completeUnimported = true,
+              usePlaceholders = true,
+              standaloneTags = { "unit", "integration" },
+              gofumpt = true,
+              analyses = {
+                unusedparamas = true,
+              },
+            },
+          },
+        })
+      end,
+
+      ["lua_ls"] = function()
+        lspconfig["lua_ls"].setup({
+          capabilities = capabilities,
+          settings = { -- custom settings for lua
+            Lua = {
+              -- make the language server recognize "vim" global
+              diagnostics = {
+                globals = { "vim" },
+              },
+              workspace = {
+                -- make language server aware of runtime files
+                library = {
+                  [vim.fn.expand("$VIMRUNTIME/lua")] = true,
+                  [vim.fn.stdpath("config") .. "/lua"] = true,
+                },
+              },
+              completion = {
+                callSnippet = "Replace",
+              },
+            },
+          },
+        })
+      end,
+    })
+  end,
 }
