@@ -2,7 +2,7 @@ return {
   {
     "nvim-treesitter/nvim-treesitter",
     event = { "BufReadPre", "BufNewFile" },
-    build = ":TSUpdate",
+    build = ":TSUpdate", -- on install / update update installed syntax trees
     dependencies = {
       "windwp/nvim-ts-autotag",
     },
@@ -45,6 +45,15 @@ return {
         -- },
         -- auto install above language parsers
         auto_install = true,
+        -- while pressing CTRL-Space the node under cursor will be selected
+        -- pressing it again, extends the selection
+        incremental_selection = {
+          enable = true,
+          init_selection = "<C-space>",
+          node_incremental = "<C-space>",
+          scope_incremental = false,
+          node_decremental = "<bs>",
+        },
       })
     end,
   },

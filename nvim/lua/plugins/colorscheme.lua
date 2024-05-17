@@ -4,7 +4,7 @@ return {
 		name = "catppuccin",
 		priority = 1000, -- ensures loading before everything else
 		config = function()
-			vim.cmd([[colorscheme catppuccin]])
+			vim.cmd("colorscheme catppuccin")
 			vim.o.termguicolors = true
 
 			local catp = require("catppuccin")
