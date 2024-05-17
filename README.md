@@ -13,6 +13,10 @@ Explicitly neovim and tmux changes
 - ripgrep
 - the_silver_searcher
 - jesseduffield/lazygit/lazygit
+- `--cask alacritty`
+- brew tap homebrew/cask-fonts
+- font-jetbrains-mono-nerd-font
+- eza
 
 any language programming in (neovim for that purpose requires GO and RUBY)
 
