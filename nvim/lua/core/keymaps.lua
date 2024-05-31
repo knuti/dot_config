@@ -21,17 +21,18 @@ km.set("n", "<leader>rk", ":vertical resize -5<CR>", opts)
 km.set("n", "<leader>rl", ":vertical resize +5<CR>", opts)
 
 opts.desc = "open a new tab"
-km.set("n", "<leader>t", "<cmd> tabnew <CR>", opts)
+-- km.set("n", "<leader>t", "<cmd> tabnew <CR>", opts)
 km.set("n", "<leader>to", "<cmd> tabnew <CR>", opts)
 km.set("n", "<leader>tf", "<cmd> tabnew %<CR>", opts)
 
 opts.desc = "close a tab"
-km.set("n", "<leader>c", "<cmd> close <CR>", opts)
+-- km.set("n", "<leader>c", "<cmd> close <CR>", opts)
 km.set("n", "<leader>tx", "<cmd> close <CR>", opts)
 
 opts.desc = "navigate between tabs with [SHIFT] TAB"
 km.set("n", "<tab>", "<cmd> tabnext <CR>", opts)
 km.set("n", "<leader>tn", "<cmd> tabnext <CR>", opts)
+km.set("n", "<S-tab>", "<cmd> tabprevious <CR>", opts)
 km.set("n", "<leader>tp", "<cmd> tabprevious <CR>", opts)
 
 opts.desc = "quick save"
