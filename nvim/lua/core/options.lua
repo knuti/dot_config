@@ -31,3 +31,6 @@ opt.splitbelow = true -- horizontal splits go below
 
 -- backspace
 opt.backspace = "indent,eol,start" -- allow backspace on indent, eol or insert mode start position
+
+-- force language
+vim.cmd("language en_US")
