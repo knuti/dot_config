@@ -12,7 +12,7 @@ return {
         markdown = { "prettier" },
         lua = { "stylua" },
         ruby = { "rubocop" },
-        go = { "gofumpt", "golines", "goimports-reviser" }
+        go = { "gofumpt", "golines", "goimports-reviser" },
       },
       format_on_save = {
         lsp_fallback = true,
