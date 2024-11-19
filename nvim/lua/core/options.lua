@@ -34,3 +34,6 @@ opt.backspace = "indent,eol,start" -- allow backspace on indent, eol or insert m
 
 -- force language
 vim.cmd("language en_US")
+
+-- disable log file for LSP
+vim.lsp.set_log_level("off")
