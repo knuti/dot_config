@@ -21,7 +21,7 @@ return {
         -- "jsonls", -- JSON
         "solargraph", -- RUBY
         -- "ruby_ls", -- RUBY
-        "sqls", -- SQL
+        "sqlls", -- SQL
         "gopls", -- GO
         "marksman", -- Markdown
         "terraformls", -- Terraform
@@ -40,6 +40,7 @@ return {
         "golines",
         "gofumpt",
         "goimports-reviser",
+        "sqlfmt",
       },
     })
   end,
