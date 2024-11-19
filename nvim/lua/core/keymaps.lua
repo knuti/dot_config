@@ -41,3 +41,8 @@ km.set("n", "<leader>w", "<cmd> w <CR>", opts)
 opts.desc = "simple +/- 1 on number"
 km.set("n", "<leader>+", "<C-a>", opts)
 km.set("n", "<leader>-", "<C-x>", opts)
+
+opts.desc = "select next buffer"
+km.set("n", "<leader>bn", "<cmd> bnext <CR>", opts)
+opts.desc = "select previous buffer"
+km.set("n", "<leader>bp", "<cmd> bprevious <CR>", opts)
