@@ -94,6 +94,7 @@ return {
           capabilities = capabilities,
           settings = {
             gopls = {
+              buildFlags = { "-tags=integration", "-tags=unit" },
               completeUnimported = true,
               usePlaceholders = true,
               standaloneTags = { "unit", "integration" },
