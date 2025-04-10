@@ -20,7 +20,7 @@ return {
         "lua_ls",
         -- "jsonls", -- JSON
         "solargraph", -- RUBY
-        -- "ruby_ls", -- RUBY
+        -- "ruby_lsp", -- RUBY
         "sqlls", -- SQL
         "gopls", -- GO
         "marksman", -- Markdown
