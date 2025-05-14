@@ -1,10 +1,10 @@
+-- :help lspconfig-all
 return {
   "neovim/nvim-lspconfig",
   event = { "BufReadPre", "BufNewFile" },
   dependencies = {
     "hrsh7th/cmp-nvim-lsp",
     { "antosha417/nvim-lsp-file-operations", config = true },
-    { "folke/neodev.nvim", opts = {} },
     {
       "smjonas/inc-rename.nvim",
       config = true,
@@ -14,10 +14,6 @@ return {
     autoformat = true,
   },
   config = function()
-    -- import lspconfig plugin
-    local lspconfig = require("lspconfig")
-    local mason_lspconfig = require("mason-lspconfig")
-    local cmp_nvim_lsp = require("cmp_nvim_lsp")
     local km = vim.keymap -- for conciseness
 
     vim.api.nvim_create_autocmd("LspAttach", {
@@ -57,11 +53,11 @@ return {
         opts.desc = "Show line diagnostics"
         km.set("n", "<leader>d", vim.diagnostic.open_float, opts)
 
-        opts.desc = "Go to previous diagnostic"
-        km.set("n", "[d", vim.diagnostic.goto_prev, opts)
-
-        opts.desc = "Go to next diagnostic"
-        km.set("n", "]d", vim.diagnostic.goto_next, opts)
+        -- opts.desc = "Go to previous diagnostic"
+        -- km.set("n", "[d", vim.diagnostic.goto_prev, opts)
+        --
+        -- opts.desc = "Go to next diagnostic"
+        -- km.set("n", "]d", vim.diagnostic.goto_next, opts)
 
         opts.desc = "Show available documentation for item under cursor"
         km.set("n", "K", vim.lsp.buf.hover, opts)
@@ -72,64 +68,63 @@ return {
     })
 
     -- used to enable autocompletion (assign to every lsp server config)
-    local capabilities = cmp_nvim_lsp.default_capabilities()
+    -- local capabilities = cmp_nvim_lsp.default_capabilities()
     -- Change the Diagnostic symbols in the sign column (gutter)
-    local signs = { Error = " ", Warn = " ", Hint = "󰠠 ", Info = " " }
-    for type, icon in pairs(signs) do
-      local hl = "DiagnosticSign" .. type
-      vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
-    end
+    -- local signs = { Error = " ", Warn = " ", Hint = "󰠠 ", Info = " " }
+    -- for type, icon in pairs(signs) do
+    --   local hl = "DiagnosticSign" .. type
+    --   vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
+    -- end
 
-    mason_lspconfig.setup_handlers({
-      -- server list is taken from mason.lua's ensure_installed block
-      function(server_name)
-        lspconfig[server_name].setup({
-          -- on_attach = on_attach,
-          capabilities = capabilities,
-        })
-      end,
-
-      ["gopls"] = function()
-        lspconfig["gopls"].setup({
-          capabilities = capabilities,
-          settings = {
-            gopls = {
-              buildFlags = { "-tags=integration", "-tags=unit" },
-              completeUnimported = true,
-              usePlaceholders = true,
-              standaloneTags = { "unit", "integration" },
-              gofumpt = true,
-              analyses = {
-                unusedparamas = true,
-              },
+    vim.lsp.config("lua_ls", {
+      settings = { -- custom settings for lua
+        Lua = {
+          -- make the language server recognize "vim" global
+          diagnostics = {
+            globals = { "vim" },
+            -- disable = { "missing-fields" },
+          },
+          workspace = {
+            -- make language server aware of runtime files
+            library = {
+              [vim.fn.expand("$VIMRUNTIME/lua")] = true,
+              [vim.fn.stdpath("config") .. "/lua"] = true,
             },
           },
-        })
-      end,
-
-      ["lua_ls"] = function()
-        lspconfig["lua_ls"].setup({
-          capabilities = capabilities,
-          settings = { -- custom settings for lua
-            Lua = {
-              -- make the language server recognize "vim" global
-              diagnostics = {
-                globals = { "vim" },
-              },
-              workspace = {
-                -- make language server aware of runtime files
-                library = {
-                  [vim.fn.expand("$VIMRUNTIME/lua")] = true,
-                  [vim.fn.stdpath("config") .. "/lua"] = true,
-                },
-              },
-              completion = {
-                callSnippet = "Replace",
-              },
-            },
+          completion = {
+            callSnippet = "Replace",
           },
-        })
-      end,
+          runtime = {
+            version = "LuaJIT",
+          },
+          hint = { enable = true },
+          signatureHelp = { enable = true },
+        },
+      },
+    })
+
+    vim.lsp.config("gopls", {
+      settings = {
+        gopls = {
+          buildFlags = { "-tags=integration", "-tags=unit" },
+          completeUnimported = true,
+          usePlaceholders = true,
+          standaloneTags = { "unit", "integration" },
+          gofumpt = true,
+          analyses = {
+            unusedparamas = true,
+          },
+        },
+      },
+    })
+
+    vim.lsp.config("solargraph", {
+      settings = {
+        solargraph = {
+          diagnostics = true,
+        },
+      },
+      filetypes = { "ruby" },
     })
   end,
 }
